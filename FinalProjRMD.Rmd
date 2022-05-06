@@ -1,0 +1,85 @@
+---
+title: "IS4300 Final Project"
+author: "Otis Idlebird III"
+date: "5/6/2022"
+output: 
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+```
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+```
+
+```{r , echo = FALSE}
+urlfile <- 'https://raw.githubusercontent.com/idlebird03/IS4300-Final-Project/main/Fatality.csv'
+RC <- read.csv(urlfile)
+```
+
+## Intoduction
+
+This project is drawing a comparison of those in the data set that commit a DUI in the years 1982 to 1988 to their Unemployment Rate and Personal Income.
+I will be using the columns **UnRate** for the unemployment rate and **PerInc** for personal income. **Year** is also included 
+in the data analysis because of its tie to a scatter plot you will see.  
+
+```{r echo=FALSE}
+names(RC) <- c("ID" , "State", "Year", "FatalRate" , "BeerTax" , "MinDA" , "Jaild" ,
+                  "Comserd" , "Vmiles" , "UnRate" , "PerInc")
+DUI <- as.data.frame(RC)
+DUI <- DUI %>% select(3, 10, 11)
+head(DUI)
+```
+
+## Unemployment Histogram
+
+The first data visualization you will see is the histogram of Unemployment rate. As you can see, there is a concentration from 5 to 10 of the unemployment rate with not many unemployment rates going past 10. The same will be done with Personal Income.
+
+```{r pressure, echo=FALSE}
+library(ggplot2)
+
+DUI1 <- DUI$UnRate
+hist(DUI1, col = "Red", main = "Unemployment Rate" , labels = TRUE)
+
+```
+
+## Personal Income Histogram
+
+In regards to personal income, This histogram seems to show a concentration around 12,000 dollars, and 16,000 dollars in income.
+
+```{r echo=FALSE}
+DUI2 <- DUI$PerInc
+hist(DUI2, col = "darkgreen", main = "Personal Income", labels = TRUE)
+
+```
+
+## Relationship Scatter Plot
+
+Here is a scatter plot to represent the relationship between the Unemployment rate and Personal income. As you can see below, the relationship is negative. There is a negative relationship between the two because the higher the personal income is, the lower the unemployment rate is, more than likely due to jobs to where an individual's income goes up. 
+
+```{r echo=FALSE}
+RatesPlot <- DUI %>% ggplot()
+RatesPlot <- RatesPlot + geom_point(aes(UnRate, PerInc, col = "Orange"), size = 2.5) +
+  geom_text(aes(UnRate, PerInc), label = DUI$Year, size = 1.6) + ggtitle("Relationship of Unemployment and Personal Income")
+RatesPlot
+```
+
+## DUI data T-Test
+
+Finally I decided to insert a T-Test to help understand the mean, and show that statistically there is difference between the left and right tails. this also puts into perspective the negative relationship.
+
+```{r echo=FALSE}
+DUITest <- t.test(DUI$UnRate, DUI$PerInc)
+DUITest
+
+```
+
+## Conclusion
+In conclusion the analysis of this dataset showed that the majority of drunk drivers in the 1982 to 1988 range did not usually go to jail because of the fact that going to jail was not mandatory. I feel that this is because of the fatality rate. I feel as if all drunk drivers' minimum punishment should be mandatory jail time.  Also the amount of individuals that decide to drive drunk have low income. There is a slight interest in mental health regarding why individuals decide to do this. Is it because they are low income? I am interested in seeing how things have changed in modern day law. 
